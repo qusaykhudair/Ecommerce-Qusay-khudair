@@ -28,7 +28,8 @@ export default function MyButton({ id }: { id: string }) {
 
         cart.setNumOfCartItems(sum);
       } else {
-        toast.error("Can't add product to cart ❌", { position: 'top-center', duration: 2000 });
+        toast.error("Can't add product to cart You must login first❗", { position: 'top-center', duration: 2000 });
+        router.push("/login");
       }
     } catch (error: unknown) {
        const err = error as { message?: string };
