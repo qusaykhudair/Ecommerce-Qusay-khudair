@@ -7,10 +7,17 @@ export default async function getMyToken() {
   const encryptedToken = data.get('next-auth.session-token') || data.get('__Secure-next-auth.session-token');
 
   if (!encryptedToken) {
-    return null;
+    throw new Error("Login to add to cart"); 
   }
 
-  const token = await decode({ token: encryptedToken?.value , secret: process.env.AUTH_SECRET! });
+  const token = await decode({ 
+    token: encryptedToken?.value, 
+    secret: process.env.AUTH_SECRET! 
+  });
+
+  if (!token?.token) {
+    throw new Error("Login to add to cart");
+  }
 
   return token?.token;
 }
