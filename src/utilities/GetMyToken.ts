@@ -1,16 +1,15 @@
 'use server'
-import { decode } from "next-auth/jwt";
-import { cookies } from "next/headers";
+
+import { authOptions } from "@/auth";
+import { getServerSession } from "next-auth";
 
 export default async function getMyToken() {
-  const data = await cookies();
-  const encryptedToken = data.get('next-auth.session-token') || data.get('__Secure-next-auth.session-token');
+  const session = await getServerSession(authOptions);
 
-  if (!encryptedToken) {
+  if (!session || !session.token) {
+    console.error("❌ No session or token found in getMyToken");
     return null;
   }
 
-  const token = await decode({ token: encryptedToken?.value , secret: process.env.AUTH_SECRET! });
-
-  return token?.token;
+  return session.token as string;
 }
