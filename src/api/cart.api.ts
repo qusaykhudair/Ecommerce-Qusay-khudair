@@ -3,26 +3,29 @@
 import getMyToken from "@/utilities/GetMyToken";
 import { json } from "zod";
 
-export default async function addProductToCart(id:string){
- const token = await getMyToken()
-  
- if(!token){
-  throw new Error('Login to add to cart')
- }
- 
-    const res =  await fetch('https://ecommerce.routemisr.com/api/v1/cart' , {
-        method : 'POST',
-        body : JSON.stringify({
-    productId : id
-}) , 
-headers : {
-    token :` ${token}`,
-    "Content-Type" : 'application/json'
-}
-    })
+export default async function addProductToCart(id: string) {
+  try {
+    const token = await getMyToken();
 
-    const data = await res.json()
-    return data ;
+    if (!token) {
+      return { status: "error", message: "Login to add to cart" };
+    }
+
+    const res = await fetch("https://ecommerce.routemisr.com/api/v1/cart", {
+      method: "POST",
+      body: JSON.stringify({ productId: id }),
+      headers: {
+         token :`${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error in addProductToCart:", error);
+    return { status: "error", message: "Something went wrong" };
+  }
 }
 
 export async function getProductsFromCart(){
@@ -31,7 +34,7 @@ export async function getProductsFromCart(){
    const res = await fetch('https://ecommerce.routemisr.com/api/v1/cart' , {
         method : 'GET' ,
         headers : {
-             token :` ${token}`,
+             token :`${token}`,
         }
     })
 
@@ -48,7 +51,7 @@ export async function removeProductFromCart(id: string) {
     {
       method: "DELETE",
       headers: {
-        token :` ${token}`,
+        token :`${token}`,
       },
     }
   );
@@ -68,7 +71,7 @@ export async function updateProductQuantity(id: string, count: number) {
         count,
       }),
       headers: {
-        token :` ${token}` ,
+        token :`${token}` ,
         "Content-Type": "application/json",
       },
     }
@@ -84,7 +87,7 @@ export async function clearCart() {
   const res = await fetch("https://ecommerce.routemisr.com/api/v1/cart", {
     method: "DELETE",
     headers: {
-       token :` ${token}`,
+       token :`${token}`,
       "Content-Type": "application/json",
     },
   });
